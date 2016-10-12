@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">StretchCardView</string>
+    <string name="title1">StretchCardView1</string>
+    <string name="title2">StretchCardView2</string>
+    <string name="content1">content1</string>
+    <string name="content2">content2</string>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="StretchCardView">
+        <!-- Title text. -->
+        <attr name="stretchCardTitleText" format="string"/>
+        <!-- Title text color. -->
+        <attr name="stretchCardTitleTextColor" format="color"/>
+        <!-- Title text background color. -->
+        <attr name="stretchCardTitleBackgroundColor" format="color"/>
+        <!-- Title text size. 12sp by default.-->
+        <attr name="stretchCardTitleTextSize" format="dimension"/>
+        <!-- Title text padding. 10dp by default. -->
+        <attr name="stretchCardTitlePadding" format="dimension"/>
+        <!-- Title text padding left. 10dp by default. -->
+        <attr name="stretchCardTitlePaddingLeft" format="dimension"/>
+        <!-- Title text padding top. 10dp by default. -->
+        <attr name="stretchCardTitlePaddingTop" format="dimension"/>
+        <!-- Title text padding right. 10dp by default. -->
+        <attr name="stretchCardTitlePaddingRight" format="dimension"/>
+        <!-- Title text padding bottom. 10dp by default. -->
+        <attr name="stretchCardTitlePaddingBottom" format="dimension"/>
+
+    </declare-styleable>
+</resources>
