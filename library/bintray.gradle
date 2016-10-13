@@ -87,6 +87,7 @@ bintray {
         name = PROJ_NAME
         licenses = ['Apache-2.0']
         vcsUrl = PROJ_VCSURL
+        userOrg = PROJ_USERORG
         websiteUrl = PROJ_WEBSITEURL
         issueTrackerUrl = PROJ_ISSUETRACKERURL
         publicDownloadNumbers = true

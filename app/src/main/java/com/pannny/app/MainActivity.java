@@ -3,7 +3,7 @@ package com.pannny.app;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.pannny.library.StretchCardView;
+import com.pannny.view.StretchCardView;
 
 public class MainActivity extends AppCompatActivity {
 

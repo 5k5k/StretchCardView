@@ -1,4 +1,4 @@
-package com.pannny.library;
+package com.pannny.view;
 
 import org.junit.Test;
 

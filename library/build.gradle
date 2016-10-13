@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 24
-        versionCode 1
-        versionName "0.1.0"
+        versionCode PROJ_VERSION_CODE as int
+        versionName PROJ_VERSION
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -19,16 +19,6 @@ android {
         }
     }
     productFlavors {
-    }
-}
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
     }
 }
 

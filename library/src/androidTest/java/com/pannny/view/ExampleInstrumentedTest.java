@@ -1,4 +1,4 @@
-package com.pannny.library;
+package com.pannny.view;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
