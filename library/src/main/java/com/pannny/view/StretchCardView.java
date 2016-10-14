@@ -61,11 +61,50 @@ public class StretchCardView extends CardView {
      */
     private static final int ANIMATION_DURATION = 300;
 
+    /**
+     * for before api21, open state title background drawable.
+     */
     private GradientDrawable normalDrawable;
 
+    /**
+     * for before api21, close state title background drawable.
+     */
     private GradientDrawable tinyDrawable;
 
+    /**
+     * title background color.
+     */
     private int titleBackgroundColor;
+
+    /**
+     * stretch callback.
+     */
+    private StretchListener stretchListener;
+
+    /**
+     * when attach to window, the StretchCardView's height.
+     */
+    private int normalHeight;
+
+    /**
+     * children margin to top
+     */
+    private int childTopMargin = 0;
+
+    /**
+     * when parent layout is LinearLayout,set min weight for animation.
+     */
+    private float minWeight = 1;
+
+    /**
+     * when parent layout is LinearLayout,set normal weight for animation.
+     */
+    private float normalWeight = 1;
+
+    /**
+     * title can be touched or not..
+     */
+    private boolean titleTouchAble = true;
 
     public StretchCardView(Context context) {
         super(context);
@@ -120,13 +159,14 @@ public class StretchCardView extends CardView {
             titleBackgroundColor = ContextCompat.getColor(context, R.color.colorPrimary);
         }
         titleView.setBackgroundColor(titleBackgroundColor);
-        //set corner radius
-        float cornerRadius = cardTypeArray.getDimensionPixelSize(android.support.v7.cardview.R.styleable.CardView_cardCornerRadius, getResources().getDimensionPixelSize(R.dimen.stretch_card_view_corner_radius));
-        setRadius(cornerRadius);
         //set title text size. 6sp by default.
         int titleTextSize = typedArray.getDimensionPixelSize(R.styleable.StretchCardView_stretchCardTitleTextSize, getResources().getDimensionPixelSize(R.dimen.stretch_card_view_title_text_size));
         titleView.setTextSize(titleTextSize);
         titleView.setPadding((int) getResources().getDimension(R.dimen.custom_title_text_padding_left), (int) getResources().getDimension(R.dimen.custom_title_text_padding), 0, (int) getResources().getDimension(R.dimen.custom_title_text_padding));
+        //set corner radius
+        int titleH = (titleTextSize + titleView.getPaddingTop() + titleView.getPaddingBottom());
+        int cornerRadius = cardTypeArray.getDimensionPixelSize(android.support.v7.cardview.R.styleable.CardView_cardCornerRadius, getResources().getDimensionPixelSize(R.dimen.stretch_card_view_corner_radius));
+        initRadius(titleH, cornerRadius);
         //set title view elevation.
         if (api21) {
             setPreventCornerOverlap(true);
@@ -143,10 +183,23 @@ public class StretchCardView extends CardView {
         });
     }
 
+    /**
+     * set CardView's corner radius.
+     *
+     * @param radius corner radius
+     */
     @Override
     public void setRadius(float radius) {
         setGradientDrawables(radius);
         super.setRadius(radius);
+    }
+
+    private void initRadius(int titleHeight, int cornerRadius) {
+        if (cornerRadius > titleHeight && titleHeight != 0) {
+            cornerRadius = (titleHeight) / 2;
+        }
+        setGradientDrawables(cornerRadius);
+        setRadius(cornerRadius);
     }
 
     private void setGradientDrawables(float radius) {
@@ -242,7 +295,7 @@ public class StretchCardView extends CardView {
                     }
                 });
             } else {
-                valueAnimator = ValueAnimator.ofInt(normalHeight, titleHeight).setDuration(ANIMATION_DURATION);
+                valueAnimator = ValueAnimator.ofInt(normalHeight, titleHeight + getPaddingBottom() + getPaddingTop()).setDuration(ANIMATION_DURATION);
                 valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @TargetApi(21)
                     @Override
@@ -282,24 +335,9 @@ public class StretchCardView extends CardView {
         titleCallback();
     }
 
-    /**
-     * children margin to top
-     */
-    private int childTopMargin = 0;
-
     private void setChildTopMargin() {
         childTopMargin = titleView.getHeight();
     }
-
-    /**
-     * when parent layout is LinearLayout,set min weight for animation.
-     */
-    private float minWeight = 1;
-
-    /**
-     * when parent layout is LinearLayout,set normal weight for animation.
-     */
-    private float normalWeight = 1;
 
     @TargetApi(21)
     @Override
@@ -315,11 +353,6 @@ public class StretchCardView extends CardView {
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
-
-    /**
-     * when attach to window, the StretchCardView's height.
-     */
-    private int normalHeight;
 
     private void initNormalHeight() {
         if (normalHeight > titleHeight) {
@@ -374,14 +407,17 @@ public class StretchCardView extends CardView {
     }
 
     /**
-     * title can be touched or not..
+     * @return title can be touched.
      */
-    private boolean titleTouchAble = true;
-
     public boolean getTitleTouchAble() {
         return titleTouchAble;
     }
 
+    /**
+     * set title touchable
+     *
+     * @param able touchable
+     */
     public void setTitleTouchAble(boolean able) {
         titleTouchAble = able;
     }
@@ -402,15 +438,10 @@ public class StretchCardView extends CardView {
                 }
                 otherWeight += ((LinearLayout.LayoutParams) (v.getLayoutParams())).weight;
             }
-            float weightOfSelf = ((LinearLayout.LayoutParams) (getLayoutParams())).weight * getTitleHeight() / (normalHeight);
+            float weightOfSelf = ((LinearLayout.LayoutParams) (getLayoutParams())).weight * (getTitleHeight() + getPaddingBottom() + getPaddingTop()) / (normalHeight);
             minWeight = weightOfSelf * (otherWeight / ((normalWeight - weightOfSelf) + otherWeight));
         }
     }
-
-    /**
-     * stretch callback.
-     */
-    private StretchListener stretchListener;
 
     /**
      * get event listener.
