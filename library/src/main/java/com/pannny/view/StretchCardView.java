@@ -1,8 +1,6 @@
 package com.pannny.view;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -23,18 +21,13 @@ import android.widget.TextView;
  * Date: 2016-10-08
  * Time: 10:25
  */
-@SuppressWarnings("unused,deprecation")
+@SuppressWarnings("unused")
 public class StretchCardView extends CardView {
 
     /**
      * Title view.
      */
     private TextView titleView;
-
-    /**
-     * If after API21 or not.
-     */
-    private boolean api21 = false;
 
     /**
      * parent is LinearLayout and weight > 0.
@@ -106,6 +99,8 @@ public class StretchCardView extends CardView {
      */
     private boolean titleTouchAble = true;
 
+    private StretchCard stretchCard;
+
     public StretchCardView(Context context) {
         super(context);
         initialize(context, null);
@@ -122,7 +117,11 @@ public class StretchCardView extends CardView {
     }
 
     private void initialize(Context context, AttributeSet attrs) {
-        setApi21();
+        if (Build.VERSION.SDK_INT >= 21) {
+            stretchCard = new StretchCardApi21Impl();
+        } else {
+            stretchCard = new StretchCardImpl();
+        }
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StretchCardView);
         TypedArray card = context.obtainStyledAttributes(attrs, android.support.v7.cardview.R.styleable.CardView);
         initTitleView(context, a, card);
@@ -131,11 +130,6 @@ public class StretchCardView extends CardView {
         addView(titleView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    private void setApi21() {
-        api21 = Build.VERSION.SDK_INT >= 21;
-    }
-
-    @TargetApi(21)
     private void initTitleView(Context context, TypedArray typedArray, TypedArray cardTypeArray) {
         titleView = new TextView(context);
         //set title text
@@ -168,13 +162,7 @@ public class StretchCardView extends CardView {
         int cornerRadius = cardTypeArray.getDimensionPixelSize(android.support.v7.cardview.R.styleable.CardView_cardCornerRadius, getResources().getDimensionPixelSize(R.dimen.stretch_card_view_corner_radius));
         initRadius(titleH, cornerRadius);
         //set title view elevation.
-        if (api21) {
-            setPreventCornerOverlap(true);
-            titleView.setElevation(getResources().getDimension(R.dimen.stretch_card_view_default_title_elevation));
-        } else {
-            setPreventCornerOverlap(false);
-            titleView.setBackgroundDrawable(normalDrawable);
-        }
+        stretchCard.initTitle(this, titleView, normalDrawable);
         titleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -261,33 +249,13 @@ public class StretchCardView extends CardView {
                 });
             }
             //before 5.0 ,set title corner.
-            if (!api21) {
-                valueAnimator.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        titleView.setBackgroundDrawable(normalDrawable);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-                    }
-                });
-            }
+            stretchCard.onAnimationStart(valueAnimator, titleView, normalDrawable);
             valueAnimator.start();
         } else {//close
             ValueAnimator valueAnimator;
             if (parentHasWeight) {
                 valueAnimator = ValueAnimator.ofFloat(normalWeight, minWeight).setDuration(ANIMATION_DURATION);
                 valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @TargetApi(21)
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         ((LinearLayout.LayoutParams) layoutParams).weight = (float) animation.getAnimatedValue();
@@ -297,7 +265,6 @@ public class StretchCardView extends CardView {
             } else {
                 valueAnimator = ValueAnimator.ofInt(normalHeight, titleHeight + getPaddingBottom() + getPaddingTop()).setDuration(ANIMATION_DURATION);
                 valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @TargetApi(21)
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         layoutParams.height = (int) animation.getAnimatedValue();
@@ -306,26 +273,7 @@ public class StretchCardView extends CardView {
                 });
             }
             //before 5.0 ,set title corner.
-            if (!api21) {
-                valueAnimator.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        titleView.setBackgroundDrawable(tinyDrawable);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-                    }
-                });
-            }
+            stretchCard.onAnimationEnd(valueAnimator, titleView, tinyDrawable);
             valueAnimator.start();
         }
     }
@@ -339,7 +287,6 @@ public class StretchCardView extends CardView {
         childTopMargin = titleView.getHeight();
     }
 
-    @TargetApi(21)
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         titleHeight = getTitleHeight();
