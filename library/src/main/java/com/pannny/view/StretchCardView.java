@@ -99,6 +99,11 @@ public class StretchCardView extends CardView {
      */
     private boolean titleTouchAble = true;
 
+    /**
+     * title view
+     */
+    private static final int SELF_CHILDREN_COUNT = 1;
+
     private StretchCard stretchCard;
 
     public StretchCardView(Context context) {
@@ -367,6 +372,46 @@ public class StretchCardView extends CardView {
      */
     public void setTitleTouchAble(boolean able) {
         titleTouchAble = able;
+    }
+
+    @Override
+    protected boolean addViewInLayout(View child, int index, ViewGroup.LayoutParams params) {
+        return super.addViewInLayout(child, index + SELF_CHILDREN_COUNT, params);
+    }
+
+    @Override
+    protected boolean addViewInLayout(View child, int index, ViewGroup.LayoutParams params, boolean preventRequestLayout) {
+        return super.addViewInLayout(child, index + SELF_CHILDREN_COUNT, params, preventRequestLayout);
+    }
+
+    @Override
+    public int indexOfChild(View child) {
+        return super.indexOfChild(child) - SELF_CHILDREN_COUNT;
+    }
+
+    @Override
+    public int getChildCount() {
+        return super.getChildCount() - SELF_CHILDREN_COUNT;
+    }
+
+    @Override
+    public View getChildAt(int index) {
+        return super.getChildAt(index + SELF_CHILDREN_COUNT);
+    }
+
+    @Override
+    public void removeViews(int start, int count) {
+        super.removeViews(start + SELF_CHILDREN_COUNT, count);
+    }
+
+    @Override
+    public void removeViewsInLayout(int start, int count) {
+        super.removeViewsInLayout(start + SELF_CHILDREN_COUNT, count);
+    }
+
+    @Override
+    protected void detachViewsFromParent(int start, int count) {
+        super.detachViewsFromParent(start + SELF_CHILDREN_COUNT, count);
     }
 
     /**
