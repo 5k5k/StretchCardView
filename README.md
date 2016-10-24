@@ -12,7 +12,7 @@ Download
 Gradle:
 ```
 dependencies {
-		compile 'com.github.5k5k:stretch-cardview:0.2.1'
+		compile 'com.github.5k5k:stretch-cardview:0.2.3'
 }
 ```
 Usage
