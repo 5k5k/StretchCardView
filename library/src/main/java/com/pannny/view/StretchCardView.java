@@ -384,33 +384,63 @@ public class StretchCardView extends CardView {
         return super.addViewInLayout(child, index + SELF_CHILDREN_COUNT, params, preventRequestLayout);
     }
 
+    @Deprecated
     @Override
     public int indexOfChild(View child) {
+        return super.indexOfChild(child);
+    }
+
+    public int indexOfRealChild(View child) {
         return super.indexOfChild(child) - SELF_CHILDREN_COUNT;
     }
 
+    @Deprecated
     @Override
     public int getChildCount() {
+        return super.getChildCount();
+    }
+
+    public int getRealChildCount() {
         return super.getChildCount() - SELF_CHILDREN_COUNT;
     }
 
+    @Deprecated
     @Override
     public View getChildAt(int index) {
+        return super.getChildAt(index);
+    }
+
+    public View getRealChildAt(int index) {
         return super.getChildAt(index + SELF_CHILDREN_COUNT);
     }
 
+    @Deprecated()
     @Override
     public void removeViews(int start, int count) {
+        super.removeViews(start, count);
+    }
+
+    public void removeRealViews(int start, int count) {
         super.removeViews(start + SELF_CHILDREN_COUNT, count);
     }
 
+    @Deprecated
     @Override
     public void removeViewsInLayout(int start, int count) {
+        super.removeViewsInLayout(start, count);
+    }
+
+    public void removeRealViewsInLayout(int start, int count) {
         super.removeViewsInLayout(start + SELF_CHILDREN_COUNT, count);
     }
 
+    @Deprecated
     @Override
     protected void detachViewsFromParent(int start, int count) {
+        super.detachViewsFromParent(start, count);
+    }
+
+    protected void detachRealViewsFromParent(int start, int count) {
         super.detachViewsFromParent(start + SELF_CHILDREN_COUNT, count);
     }
 
